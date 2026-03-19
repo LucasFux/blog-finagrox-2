@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import { Post, Category } from "@/types"
+import { Post } from "@/types"
 import { PostCard } from "./post-card"
 import { CategoryFilter } from "./category-filter"
 
@@ -11,7 +11,21 @@ interface PostGridProps {
 }
 
 export function PostGrid({ posts, showFilter = true }: PostGridProps) {
-  const [activeCategory, setActiveCategory] = useState<Category | null>(null)
+  const [activeCategory, setActiveCategory] = useState<string | null>(null)
+
+  const categories = useMemo(() => {
+    const countMap: Record<string, number> = {}
+
+    posts.forEach((post) => {
+      if (post.category) {
+        countMap[post.category] = (countMap[post.category] || 0) + 1
+      }
+    })
+
+    return Object.entries(countMap)
+      .sort((a, b) => b[1] - a[1])
+      .map(([name]) => name)
+  }, [posts])
 
   const filteredPosts = useMemo(() => {
     if (!activeCategory) return posts
@@ -25,6 +39,7 @@ export function PostGrid({ posts, showFilter = true }: PostGridProps) {
           <CategoryFilter
             activeCategory={activeCategory}
             onCategoryChange={setActiveCategory}
+            categories={categories}
           />
         </div>
       )}

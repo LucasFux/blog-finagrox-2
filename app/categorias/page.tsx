@@ -2,8 +2,9 @@ import { Metadata } from "next"
 import Link from "next/link"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
-import { categories } from "@/types"
-import { mockPosts } from "@/lib/mock-posts"
+import { getAllCategories } from "@/lib/posts"
+
+export const revalidate = 60
 
 export const metadata: Metadata = {
   title: "Categorías | Finagrox Blog",
@@ -26,15 +27,13 @@ const categoryIcons: Record<string, string> = {
   "Herramientas": "🛠️",
 }
 
-export default function CategoriasPage() {
-  const getPostCount = (category: string) => {
-    return mockPosts.filter((post) => post.category === category).length
-  }
+export default async function CategoriasPage() {
+  const categories = await getAllCategories()
 
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      
+
       <main className="flex-1">
         <section className="py-16 sm:py-24 bg-background">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -46,40 +45,37 @@ export default function CategoriasPage() {
                 Explorá nuestros artículos organizados por temática para encontrar exactamente lo que necesitás.
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {categories.map((category) => {
-                const postCount = getPostCount(category)
-                return (
-                  <Link
-                    key={category}
-                    href={`/?category=${encodeURIComponent(category)}`}
-                    className="group block bg-card rounded-xl p-6 border border-border hover:border-brand-green-light hover:shadow-md transition-all duration-300"
-                  >
-                    <div className="flex items-start gap-4">
-                      <span className="text-3xl" role="img" aria-label={category}>
-                        {categoryIcons[category]}
-                      </span>
-                      <div>
-                        <h2 className="font-heading text-xl font-semibold text-card-foreground group-hover:text-brand-green-dark transition-colors">
-                          {category}
-                        </h2>
-                        <p className="text-sm text-muted-foreground mt-2">
-                          {categoryDescriptions[category]}
-                        </p>
-                        <p className="text-sm font-medium text-brand-green-dark mt-3">
-                          {postCount} {postCount === 1 ? "artículo" : "artículos"}
-                        </p>
-                      </div>
+              {categories.map(({ name, count }) => (
+                <Link
+                  key={name}
+                  href={`/?category=${encodeURIComponent(name)}`}
+                  className="group block bg-card rounded-xl p-6 border border-border hover:border-brand-green-light hover:shadow-md transition-all duration-300"
+                >
+                  <div className="flex items-start gap-4">
+                    <span className="text-3xl" role="img" aria-label={name}>
+                      {categoryIcons[name] ?? "📄"}
+                    </span>
+                    <div>
+                      <h2 className="font-heading text-xl font-semibold text-card-foreground group-hover:text-brand-green-dark transition-colors">
+                        {name}
+                      </h2>
+                      <p className="text-sm text-muted-foreground mt-2">
+                        {categoryDescriptions[name] ?? ""}
+                      </p>
+                      <p className="text-sm font-medium text-brand-green-dark mt-3">
+                        {count} {count === 1 ? "artículo" : "artículos"}
+                      </p>
                     </div>
-                  </Link>
-                )
-              })}
+                  </div>
+                </Link>
+              ))}
             </div>
           </div>
         </section>
       </main>
-      
+
       <Footer />
     </div>
   )

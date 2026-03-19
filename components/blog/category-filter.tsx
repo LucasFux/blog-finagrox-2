@@ -1,14 +1,14 @@
 "use client"
 
-import { categories, Category } from "@/types"
 import { cn } from "@/lib/utils"
 
 interface CategoryFilterProps {
-  activeCategory: Category | null
-  onCategoryChange: (category: Category | null) => void
+  categories: string[]
+  activeCategory: string | null
+  onCategoryChange: (category: string | null) => void
 }
 
-export function CategoryFilter({ activeCategory, onCategoryChange }: CategoryFilterProps) {
+export function CategoryFilter({ categories, activeCategory, onCategoryChange }: CategoryFilterProps) {
   return (
     <div className="flex flex-wrap items-center gap-2">
       <button

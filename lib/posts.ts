@@ -172,3 +172,19 @@ export async function getAllSlugs(): Promise<string[]> {
   const posts = await getAllPosts()
   return posts.map((post) => post.slug)
 }
+
+// Obtener categorías únicas con conteo de posts
+export async function getAllCategories(): Promise<{ name: string; count: number }[]> {
+    const posts = await getAllPosts()
+    
+    const countMap: Record<string, number> = {}
+    posts.forEach((post) => {
+      if (post.category) {
+        countMap[post.category] = (countMap[post.category] || 0) + 1
+      }
+    })
+  
+    return Object.entries(countMap)
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count)
+  }
