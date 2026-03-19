@@ -1,0 +1,135 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: #f9f9f6;
+  --foreground: #1a1a19;
+  --card: #ffffff;
+  --card-foreground: #1a1a19;
+  --popover: #ffffff;
+  --popover-foreground: #1a1a19;
+  --primary: #31511e;
+  --primary-foreground: #ffffff;
+  --secondary: #859f3d;
+  --secondary-foreground: #ffffff;
+  --muted: #f0f0ed;
+  --muted-foreground: #5a5a57;
+  --accent: #859f3d;
+  --accent-foreground: #ffffff;
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.577 0.245 27.325);
+  --border: #e5e5e0;
+  --input: #e5e5e0;
+  --ring: #31511e;
+  --radius: 0.5rem;
+  
+  /* Brand colors */
+  --brand-black: #1a1a19;
+  --brand-green-dark: #31511e;
+  --brand-green-light: #859f3d;
+  --brand-bg: #f9f9f6;
+  --brand-white: #ffffff;
+}
+
+@theme inline {
+  --font-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --font-heading: var(--font-dm-sans), 'DM Sans', system-ui, sans-serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  
+  /* Brand colors in Tailwind */
+  --color-brand-black: var(--brand-black);
+  --color-brand-green-dark: var(--brand-green-dark);
+  --color-brand-green-light: var(--brand-green-light);
+  --color-brand-bg: var(--brand-bg);
+  --color-brand-white: var(--brand-white);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Prose styles for blog content */
+.prose {
+  @apply text-foreground leading-relaxed;
+}
+
+.prose h2 {
+  @apply text-2xl font-bold mt-10 mb-4 font-heading text-brand-black;
+}
+
+.prose h3 {
+  @apply text-xl font-semibold mt-8 mb-3 font-heading text-brand-black;
+}
+
+.prose p {
+  @apply mb-4 leading-relaxed;
+}
+
+.prose ul {
+  @apply list-disc pl-6 mb-4 space-y-2;
+}
+
+.prose ol {
+  @apply list-decimal pl-6 mb-4 space-y-2;
+}
+
+.prose li {
+  @apply leading-relaxed;
+}
+
+.prose blockquote {
+  @apply border-l-4 border-brand-green-light pl-4 py-2 my-6 italic bg-muted/50 rounded-r-lg;
+}
+
+.prose code {
+  @apply bg-muted px-1.5 py-0.5 rounded text-sm font-mono;
+}
+
+.prose pre {
+  @apply bg-brand-black text-brand-white p-4 rounded-lg overflow-x-auto my-6;
+}
+
+.prose pre code {
+  @apply bg-transparent p-0;
+}
+
+.prose strong {
+  @apply font-semibold text-brand-black;
+}
+
+.prose hr {
+  @apply my-8 border-border;
+}
+
+.prose a {
+  @apply text-brand-green-dark underline underline-offset-2 hover:text-brand-green-light transition-colors;
+}
