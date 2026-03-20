@@ -12,6 +12,53 @@ function getRichText(prop: any): string {
   return prop?.rich_text?.[0]?.plain_text ?? ""
 }
 
+function getLinkedText(prop: any): { text: string; url?: string } {
+  const richText = prop?.rich_text?.[0]
+  if (richText?.plain_text) {
+    return {
+      text: richText.plain_text,
+      url: richText?.href || richText?.text?.link?.url || undefined,
+    }
+  }
+
+  const title = prop?.title?.[0]
+  if (title?.plain_text) {
+    return {
+      text: title.plain_text,
+      url: title?.href || title?.text?.link?.url || undefined,
+    }
+  }
+
+  const peopleName = prop?.people?.[0]?.name
+  if (peopleName) return { text: peopleName }
+
+  const selectName = prop?.select?.name
+  if (selectName) return { text: selectName }
+
+  const formulaString = prop?.formula?.string
+  if (formulaString) return { text: formulaString }
+
+  const formulaNumber = prop?.formula?.number
+  if (typeof formulaNumber === "number") return { text: String(formulaNumber) }
+
+  return { text: "" }
+}
+
+function getText(prop: any): string {
+  // Notion puede guardar el mismo contenido como `rich_text`, `title`, `people`, etc.
+  // Este helper intenta cubrir los casos más comunes para la propiedad `AuthorName`.
+  return (
+    getRichText(prop) ||
+    prop?.title?.[0]?.plain_text ||
+    prop?.select?.name ||
+    prop?.people?.[0]?.name ||
+    prop?.people?.[0]?.plain_text ||
+    prop?.formula?.string ||
+    (typeof prop?.formula?.number === "number" ? String(prop.formula.number) : "") ||
+    ""
+  )
+}
+
 function getTitle(prop: any): string {
   return prop?.title?.[0]?.plain_text ?? ""
 }
@@ -59,7 +106,8 @@ function getNotionPageCover(page: any): string {
 
 function pageToPost(page: any): Post {
   const props = page.properties
-  const authorName = getRichText(props.AuthorName) || "Finagrox"
+  const author = getLinkedText(props.AuthorName)
+  const authorName = author.text || getText(props.AuthorName) || "Finagrox"
   const coverImage =
     getNotionPageCover(page) ||
     getUrl(props.CoverImage) ||
@@ -79,6 +127,7 @@ function pageToPost(page: any): Post {
     author: {
       name: authorName,
       avatar: authorAvatar,
+      url: author.url,
     },
     date: getDate(props.Date),
     readTime: getNumber(props.ReadTime) || 5,
@@ -114,7 +163,7 @@ async function fetchAllPosts(): Promise<Post[]> {
 
 export const getAllPosts = unstable_cache(
   fetchAllPosts,
-  ["all-posts"],
+  ["all-posts-v2"],
   { revalidate: 60 }
 )
 
@@ -123,7 +172,7 @@ export const getFeaturedPost = unstable_cache(
     const posts = await getAllPosts()
     return posts.find((post) => post.featured)
   },
-  ["featured-post"],
+  ["featured-post-v2"],
   { revalidate: 60 }
 )
 
@@ -147,11 +196,22 @@ export const getPostBySlug = unstable_cache(
 
     const mdBlocks = await n2m.pageToMarkdown(page.id)
     const mdString = n2m.toMarkdownString(mdBlocks)
-    post.content = mdString.parent
+
+    // Algunas personas guardan en Notion un texto tipo "Por: {{AuthorName}}"
+    // dentro del contenido; como `notion-to-md` no resuelve placeholders del template,
+    // aquí reemplazamos los más comunes por el valor que sí obtenemos de la base de datos.
+    const authorName = post.author.name
+    const content = mdString.parent
+      .replace(/{{\s*AuthorName\s*}}/g, authorName)
+      .replace(/{{\s*authorName\s*}}/g, authorName)
+      .replace(/{{\s*author\s*}}/g, authorName)
+      .replace(/{{\s*Author\s*}}/g, authorName)
+
+    post.content = content
 
     return post
   },
-  ["post-by-slug"],
+  ["post-by-slug-v2"],
   { revalidate: 60 }
 )
 
@@ -163,7 +223,7 @@ export const getRelatedPosts = unstable_cache(
       .filter((post) => post.slug !== currentSlug)
       .slice(0, limit)
   },
-  ["related-posts"],
+  ["related-posts-v2"],
   { revalidate: 60 }
 )
 
@@ -182,7 +242,7 @@ export const getAllCategories = unstable_cache(
       .map(([name, count]) => ({ name, count }))
       .sort((a, b) => b.count - a.count)
   },
-  ["all-categories"],
+  ["all-categories-v2"],
   { revalidate: 60 }
 )
 
@@ -191,7 +251,7 @@ export const getCategoryBySlug = unstable_cache(
     const categories = await getAllCategories()
     return categories.find((category) => slugifyCategory(category.name) === slug)
   },
-  ["category-by-slug"],
+  ["category-by-slug-v2"],
   { revalidate: 60 }
 )
 
@@ -200,7 +260,7 @@ export const getPostsByCategorySlug = unstable_cache(
     const posts = await getAllPosts()
     return posts.filter((post) => slugifyCategory(post.category) === slug)
   },
-  ["posts-by-category-slug"],
+  ["posts-by-category-slug-v2"],
   { revalidate: 60 }
 )
 

@@ -54,9 +54,20 @@ export function FeaturedPost({ post }: FeaturedPostProps) {
                 className="rounded-full"
               />
               <div className="flex flex-col">
-                <span className="text-sm font-medium text-card-foreground">
-                  {post.author.name}
-                </span>
+                {post.author.url ? (
+                  <a
+                    href={post.author.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm font-medium text-card-foreground hover:text-brand-green-dark transition-colors"
+                  >
+                    {post.author.name}
+                  </a>
+                ) : (
+                  <span className="text-sm font-medium text-card-foreground">
+                    {post.author.name}
+                  </span>
+                )}
                 <span className="text-xs text-muted-foreground">
                   {formatDate(post.date)} · {post.readTime} min de lectura
                 </span>

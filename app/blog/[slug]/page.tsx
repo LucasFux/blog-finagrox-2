@@ -81,7 +81,18 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   className="rounded-full"
                 />
                 <div className="text-left">
-                  <p className="font-medium text-foreground">{post.author.name}</p>
+                  {post.author.url ? (
+                    <a
+                      href={post.author.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-medium text-foreground hover:text-brand-green-dark transition-colors"
+                    >
+                      {post.author.name}
+                    </a>
+                  ) : (
+                    <p className="font-medium text-foreground">{post.author.name}</p>
+                  )}
                   <p className="text-sm text-muted-foreground">
                     {formatDate(post.date)} · {post.readTime} min de lectura
                   </p>

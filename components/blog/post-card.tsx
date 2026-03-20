@@ -52,9 +52,20 @@ export function PostCard({ post }: PostCardProps) {
               className="rounded-full"
             />
             <div className="flex flex-col">
-              <span className="text-xs font-medium text-card-foreground">
-                {post.author.name}
-              </span>
+              {post.author.url ? (
+                <a
+                  href={post.author.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs font-medium text-card-foreground hover:text-brand-green-dark transition-colors"
+                >
+                  {post.author.name}
+                </a>
+              ) : (
+                <span className="text-xs font-medium text-card-foreground">
+                  {post.author.name}
+                </span>
+              )}
               <span className="text-xs text-muted-foreground">
                 {formatDate(post.date)}
               </span>
