@@ -26,10 +26,24 @@ export function PostContent({ content }: PostContentProps) {
 
   // Simple markdown to HTML parser
   const parseMarkdown = (markdown: string): string => {
+    const escapeAttr = (value: string): string =>
+      value
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;")
+
     let html = markdown
       // Headers
       .replace(/^### (.+)$/gm, '<h3>$1</h3>')
       .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+      // Images - notion-to-md genera `![alt](url)`
+      .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_match, alt: string, url: string) => {
+        const safeAlt = escapeAttr(String(alt ?? ""))
+        const safeUrl = escapeAttr(String(url ?? ""))
+        return `<img src="${safeUrl}" alt="${safeAlt}" loading="lazy" />`
+      })
       // Bold and italic
       .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
       .replace(/\*(.+?)\*/g, '<em>$1</em>')

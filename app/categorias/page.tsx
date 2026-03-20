@@ -3,6 +3,7 @@ import Link from "next/link"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { getAllCategories } from "@/lib/posts"
+import { slugifyCategory } from "@/lib/category-slug"
 
 export const revalidate = 60
 
@@ -50,7 +51,7 @@ export default async function CategoriasPage() {
               {categories.map(({ name, count }) => (
                 <Link
                   key={name}
-                  href={`/?category=${encodeURIComponent(name)}`}
+                  href={`/categorias/${slugifyCategory(name)}`}
                   className="group block bg-card rounded-xl p-6 border border-border hover:border-brand-green-light hover:shadow-md transition-all duration-300"
                 >
                   <div className="flex items-start gap-4">

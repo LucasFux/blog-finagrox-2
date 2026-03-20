@@ -4,6 +4,7 @@ import { useState, useMemo } from "react"
 import { Post } from "@/types"
 import { PostCard } from "./post-card"
 import { CategoryFilter } from "./category-filter"
+import { slugifyCategory } from "@/lib/category-slug"
 
 interface PostGridProps {
   posts: Post[]
@@ -23,8 +24,12 @@ export function PostGrid({ posts, showFilter = true }: PostGridProps) {
     })
 
     return Object.entries(countMap)
-      .sort((a, b) => b[1] - a[1])
-      .map(([name]) => name)
+      .sort((a, b) => a[0].localeCompare(b[0], "es"))
+      .map(([name, count]) => ({
+        name,
+        count,
+        slug: slugifyCategory(name),
+      }))
   }, [posts])
 
   const filteredPosts = useMemo(() => {
