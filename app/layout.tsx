@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { DM_Sans, Inter } from 'next/font/google'
 import './globals.css'
+import { Analytics } from "@/components/analytics"
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -34,6 +35,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={`${inter.variable} ${dmSans.variable} font-sans antialiased`}>
+        <Analytics />
         {children}
       </body>
     </html>
