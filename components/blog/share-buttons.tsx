@@ -11,9 +11,9 @@ interface ShareButtonsProps {
 
 export function ShareButtons({ title, slug }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false)
-  const url = typeof window !== "undefined" 
-    ? `${window.location.origin}/blog/${slug}` 
-    : `/blog/${slug}`
+  const url = typeof window !== "undefined"
+    ? `${window.location.origin}/${slug}`
+    : `/${slug}`
 
   const handleCopyLink = async () => {
     try {

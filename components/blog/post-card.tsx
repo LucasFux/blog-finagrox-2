@@ -10,7 +10,7 @@ interface PostCardProps {
 export function PostCard({ post }: PostCardProps) {
   return (
     <article className="group bg-card rounded-lg overflow-hidden shadow-sm border border-border hover:shadow-md transition-all duration-300 hover:-translate-y-1">
-      <Link href={`/blog/${post.slug}`} className="block">
+      <Link href={`/${post.slug}`} className="block">
         <div className="relative aspect-video overflow-hidden">
           <Image
             src={post.coverImage}
@@ -32,7 +32,7 @@ export function PostCard({ post }: PostCardProps) {
           </span>
         </div>
         
-        <Link href={`/blog/${post.slug}`}>
+        <Link href={`/${post.slug}`}>
           <h3 className="font-heading text-lg font-semibold text-card-foreground mb-2 line-clamp-2 group-hover:text-brand-green-dark transition-colors">
             {post.title}
           </h3>
@@ -73,7 +73,7 @@ export function PostCard({ post }: PostCardProps) {
           </div>
           
           <Link
-            href={`/blog/${post.slug}`}
+            href={`/${post.slug}`}
             className="text-sm font-medium text-brand-green-dark hover:text-brand-green-light transition-colors"
           >
             Leer más →

@@ -11,7 +11,7 @@ export function FeaturedPost({ post }: FeaturedPostProps) {
   return (
     <article className="group bg-card rounded-xl overflow-hidden shadow-sm border border-border hover:shadow-lg transition-all duration-300">
       <div className="flex flex-col lg:flex-row">
-        <Link href={`/blog/${post.slug}`} className="block lg:w-1/2">
+        <Link href={`/${post.slug}`} className="block lg:w-1/2">
           <div className="relative aspect-video lg:aspect-auto lg:h-full overflow-hidden">
             <Image
               src={post.coverImage}
@@ -34,7 +34,7 @@ export function FeaturedPost({ post }: FeaturedPostProps) {
             </span>
           </div>
           
-          <Link href={`/blog/${post.slug}`}>
+          <Link href={`/${post.slug}`}>
             <h2 className="font-heading text-2xl lg:text-3xl font-bold text-card-foreground mb-4 group-hover:text-brand-green-dark transition-colors text-balance">
               {post.title}
             </h2>
@@ -75,7 +75,7 @@ export function FeaturedPost({ post }: FeaturedPostProps) {
             </div>
             
             <Link
-              href={`/blog/${post.slug}`}
+              href={`/${post.slug}`}
               className="text-sm font-medium text-brand-green-dark hover:text-brand-green-light transition-colors"
             >
               Leer más →
